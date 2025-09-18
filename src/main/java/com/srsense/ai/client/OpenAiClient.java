@@ -5,12 +5,25 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import jakarta.annotation.PostConstruct;
+
 import java.util.*;
+
+
 
 @Component
 public class OpenAiClient {
 
-    private final String apiKey;
+    @Value("${openrouter.api.key}")
+private String apiKey;
+
+@PostConstruct
+public void init() {
+    if (apiKey == null || apiKey.isEmpty()) {
+        throw new RuntimeException("API key is missing!");
+    }
+}
+    // private final String apiKey;
     private final String apiUrl;
     private final RestTemplate restTemplate;
 
