@@ -24,11 +24,40 @@ public class SrsGenerateService {
 
     public SrsResponse generate(PromptRequest request) {
         log.info("Generating SRS for prompt: {}", request.getPrompt());
+        log.info("Generating SRS for format: {}", request.getFormat());
 
         Map<String, Object> srsData = new HashMap<>();
         SrsResponse response = new SrsResponse();
 
-        String finalPrompt = promptProvider.getSrsPrompt(request.getPrompt());
+        String format = request.getFormat();
+        String finalPrompt = " ";
+
+        if (format != null) {
+            format = format.trim();
+        }
+
+        if ("IEEE830".equalsIgnoreCase(format)) {
+            finalPrompt = promptProvider.getSrsPrompt1(request.getPrompt());
+        } else if ("IEEE29148".equalsIgnoreCase(format)) {
+            finalPrompt = promptProvider.getSrsPrompt2(request.getPrompt());
+        } else if ("Volere".equalsIgnoreCase(format)) {
+            finalPrompt = promptProvider.getSrsPrompt3(request.getPrompt());
+        } else if ("Agile".equalsIgnoreCase(format)) {
+            finalPrompt = promptProvider.getSrsPrompt4(request.getPrompt());
+        } else if ("ISO".equalsIgnoreCase(format)) {
+            finalPrompt = promptProvider.getSrsPrompt5(request.getPrompt());
+        } else if ("FURPS".equalsIgnoreCase(format)) {
+            finalPrompt = promptProvider.getSrsPrompt6(request.getPrompt());
+        } else if ("CMMI".equalsIgnoreCase(format)) {
+            finalPrompt = promptProvider.getSrsPrompt7(request.getPrompt());
+        } else if ("BRD".equalsIgnoreCase(format)) {
+            finalPrompt = promptProvider.getSrsPrompt8(request.getPrompt());
+        } else {
+            log.warn("Unknown format: {}", format);
+        }
+
+        log.info("Final Prompt : {}", finalPrompt);
+
         String aiResponse = openAiClient.generateCompletion(finalPrompt);
 
         if (aiResponse == null) {
